@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<!-- background -->
+<body background="https://images.freecreatives.com/wp-content/uploads/2016/03/White-Grunge-Wall-Texture-600x557.jpg" >
+
+<!-- audio lel -->
+<audio loop autoplay id="myaudio">
+  <source src="https://fauux.neocities.org/sound/boon_loop.wav">
+</audio>
+<script>
+  var audio = document.getElementById("myaudio");
+  audio.volume = 0.04;
+</script>
+
+
+<h1>All the images in the current directory</h1>
+
+
+choose tags to display:
+<form action="/tagfilter" method="get" >
+	<input list="tags" name="tag">
+		<datalist id="tags">
+			<option value="Internet Explorer">
+			<option value="Firefox">
+			<option value="Chrome">
+			<option value="Opera">
+		<option value="Safari">
+	</datalist>
+<input type="submit">
+</form> <br>
+
+
