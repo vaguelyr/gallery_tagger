@@ -57,13 +57,16 @@ os.chdir(htmldir+'/..')
 os.chdir('..')
 
 if first == True:
-    try:
+    try: # TODO replace with a check for if it exists and remove try except
         os.remove(htmldir + "content.html")
     except:
         pass
     os.symlink( htmldir + "content_waiting.html", htmldir + "content.html" )
+    # startup generation could probably be redone better
+    print('thread1 start builder')
     import builder
-    builder.buildPage()
+    builder.buildPage() # generates /tmp/list.txt used by tagcacher
+    print('thread1 start tagcacher')
     import tagcacher
 
 print("well...")
@@ -89,7 +92,7 @@ def app(environ, start_response):
 
     # handle jpg 
     if uri.endswith("jpg"):
-        print('requested a jpg lmao')
+        print('requested a jpg')
         try :
             data = get_file("."+uri)
             start_response("200 OK", [
@@ -167,7 +170,7 @@ def app(environ, start_response):
         ])
         return iter([data.encode()])
 
-    # 404 page
+    # 404 page catchall 
     data = str_get_txt('project_display/html/404.html')
     start_response("404 Not Found", [
         ("Content-Type", "text/html"),
