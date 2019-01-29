@@ -12,6 +12,6 @@ What it will do:
     Anything else I can think of doing
 
 Dependancies: 
-gunicorn
-piexif  
+	gunicorn
+	piexif  
 <pre>
