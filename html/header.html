@@ -8,17 +8,17 @@
 <audio loop autoplay id="myaudio">
   <source src="https://fauux.neocities.org/sound/boon_loop.wav">
 </audio>
-<script>
-  var audio = document.getElementById("myaudio");
-  audio.volume = 0.04;
-</script>
+
+
+
+
 
 
 <h1>All the images in the current directory</h1>
 
 
 choose tags to display:
-<form action="/tagfilter" method="get" >
+<form action="/tagpage" method="get" >
 	<input list="tags" name="tag">
 		<datalist id="tags">
 			<option value="Internet Explorer">
@@ -29,5 +29,7 @@ choose tags to display:
 	</datalist>
 <input type="submit">
 </form> <br>
+
+<script> tag="all" </script>
 
 

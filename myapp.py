@@ -4,6 +4,8 @@
 import os
 import time
 import tagpage
+import taghandler
+import json # for the tag page. maybe move to new file
 
 # =========================================================== functions
 def str_get_txt(file):
@@ -52,22 +54,14 @@ if first == True:
     time.sleep(0.5)
     os.rmdir("fight")
 
+
+if first == True:
+    print('thread1 start tagcacher')
+    import tagcacher
+
 # go to where the images are
 os.chdir(htmldir+'/..')
 os.chdir('..')
-
-if first == True:
-    try: # TODO replace with a check for if it exists and remove try except
-        os.remove(htmldir + "content.html")
-    except:
-        pass
-    os.symlink( htmldir + "content_waiting.html", htmldir + "content.html" )
-    # startup generation could probably be redone better
-    print('thread1 start builder')
-    import builder
-    builder.buildPage() # generates /tmp/list.txt used by tagcacher
-    print('thread1 start tagcacher')
-    import tagcacher
 
 print("well...")
 
@@ -80,10 +74,56 @@ def app(environ, start_response):
     print('worker running at: ' + os.getcwd() )
 
     # handle /
+    # the only page this has to server is the dynamic one that shows all the tags
+    # that should be handled in the page itself.
+    # the page makes a javascript ask for the images for a given tag which
+    # defaults to the 'all' tag
     if uri == '/':
         data = str_get_txt('project_display/html/header.html')
         data += str_get_txt('project_display/html/content.html')
         data += str_get_txt('project_display/html/footer.html')
+        start_response("200 OK", [
+            ("Content-Type", "text/html"),
+            ("Content-Length", str(len(data)))
+        ])
+        return iter([data.encode()])
+
+    # tag page poc
+    if '/tagpage?tag=' in uri:
+        print('====tagpage')
+        tags = uri.split('=')[1]         
+        print( tags )
+        data = str_get_txt('project_display/html/header.html')
+        data += "<script> tag = \"" + tags + "\"</script> \n"
+        data += str_get_txt('project_display/html/content.html')
+        data += str_get_txt('project_display/html/footer.html')
+        start_response("200 OK", [
+            ("Content-Type", "text/html"),
+            ("Content-Length", str(len(data)))
+        ])
+        return iter([data.encode()])
+
+    # req tags list
+    if '/reqtags?tag=' in uri:
+        print('====reqtags')
+        # for sanity sake taghandler should make this json object
+        tags = uri.split('=')[1]         
+        print( tags )
+
+        files = taghandler.getFiles(tags) 
+        files = files.split(',')
+        print(files)
+
+        jsono = {}
+        count=0
+        for f in files:
+            jsono['key'+str(count)] = f
+            count+=1
+        	
+     
+        #jsono['key99999'] = 'value'
+        data = json.dumps(jsono)
+
         start_response("200 OK", [
             ("Content-Type", "text/html"),
             ("Content-Length", str(len(data)))
@@ -147,28 +187,31 @@ def app(environ, start_response):
             print("ico failed")
 
     # handle show tags
-    if 'tagfilter' in uri:
-        print('tag filter page')
-        data = str_get_txt('project_display/html/header.html')
-        data += "\n the uri was " + uri + " \n"
-        data += tagpage.maketagpage(uri)
-        data += str_get_txt('project_display/html/footer.html')
-        start_response("200 OK", [
-            ("Content-Type", "text/html"),
-            ("Content-Length", str(len(data)))
-        ])
+    #if 'tagfilter' in uri:
+    #    print('tag filter page')
+    #    data = str_get_txt('project_display/html/header.html')
+    #    data += "\n the uri was " + uri + " \n"
+    #    data += tagpage.maketagpage(uri)
+    #    data += str_get_txt('project_display/html/footer.html')
+    #    start_response("200 OK", [
+    #        ("Content-Type", "text/html"),
+    #        ("Content-Length", str(len(data)))
+    #    ])
         return iter([data.encode()])     
 
     # handle add tag
-    if '/command:add_tag:item:' in uri:
+    if '/command:addtag:item:' in uri:
         print('add tag!')
-        tagpage.tagImageFromURI(uri)
+        taghandler.addTagsFromUri(uri)
         data = "tag accepted"
         start_response("200 OK", [
             ("Content-Type", "text/html"),
             ("Content-Length", str(len(data)))
         ])
         return iter([data.encode()])
+
+    # easteregg
+    # if uri is /cats or something, have a funny picture or whatever
 
     # 404 page catchall 
     data = str_get_txt('project_display/html/404.html')

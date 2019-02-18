@@ -1,1 +1,82 @@
-/home/vague/Pictures/wallpaper_rand/project_display/html/content2.html
+<script>
+  //var audio = document.getElementById("myaudio");
+  //audio.volume = 0.04;
+
+	// onload
+	window.onload = function codeAddress() {
+	    //alert('ok');
+        }
+
+  	// requests tags and displays images and menu
+	
+	fetch('reqtags?tag='+tag)
+		.then(response => response.json())
+		.then(data => {
+		  console.log(data) // Prints result from `response.json()` in getRequest
+			// build image list
+			count = 0;
+		  	for ( key in data ){
+				k= key;
+				dk = data[key];
+				console.log(k + ' ' + dk);
+				
+				// create div for image node
+				div = document.createElement('div');
+				div.id = count;
+				console.log(div.id);
+				count -=-1;
+	
+				// create and append image
+				var img = document.createElement("img");
+				img.style.width = '100%';
+				img.style.height = 'auto';
+				img.src = dk;
+
+				// add form stuff
+				var f = document.createElement("form");
+				f.setAttribute('method',"get");
+				f.setAttribute('action','/command:addtag:item:'+count);
+				f.setAttribute('target',"dummyframe");
+				
+				var i = document.createElement("input"); //input element, text
+				i.setAttribute('list',"tags");
+				i.setAttribute('name',"tag");
+	
+				var dl = document.createElement("datalist")
+				dl.id = "tags";
+
+				var o = document.createElement("option");
+				o.value = "tag1";
+				
+				var s = document.createElement("input"); //input element, Submit button
+				s.setAttribute('type',"submit");
+				s.setAttribute('value',"Submitrr");
+				
+				f.appendChild(i);
+				dl.appendChild(o);
+				i.appendChild(dl);
+				f.appendChild(s);
+				
+				
+				
+
+				// append to document
+				div.appendChild(img);
+				div.appendChild(f);
+				body = document.getElementById("images");
+				body.appendChild(div);	
+			}
+	})
+	.catch(error => console.error(error))
+
+
+</script>
+
+<div id="msg1">
+	please while while we request the tags
+</div>
+
+<div id="images">
+	
+</div>
+
