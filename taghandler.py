@@ -1,6 +1,10 @@
 # vague
 # tag handler using sql in python
 
+# todo
+#   delete images from storage
+#   delete entries from db
+
 import time
 
 import sqlite3
