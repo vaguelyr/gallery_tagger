@@ -1,4 +1,4 @@
-<pre>This doesn't completely work at the moment.
+<pre>
 
 This project is to help display, tag and filter images on a server.
 
@@ -12,6 +12,12 @@ What it will do:
     Anything else I can think of doing
 
 Dependancies: 
-	gunicorn
-	piexif  
+	python3
+	sqlite3
+
+Status: The core is mostly done.
+Todo:
+    Add functions for searching
+    Implement webserver in flask
 <pre>
+
